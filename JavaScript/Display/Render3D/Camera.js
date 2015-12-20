@@ -5,7 +5,7 @@ function Camera() {
 
 	this.x = 0;
 	this.y = -2;
-	this.z = -5;
+	this.z = -20;
 
 	this.velRotX = 0;
 	this.velRotY = 2;

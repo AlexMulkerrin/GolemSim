@@ -2,7 +2,7 @@ function Simulation(width, height, depth) {
 	this.terrain = new Terrain(width, height, depth);
 
 	this.unit = [];
-	this.createGolem();
+	this.createGolems(10);
 
 	this.terrain.getTotals();
 
@@ -11,16 +11,18 @@ function Simulation(width, height, depth) {
 	this.framesTillUpdate = this.framesPerTick;
 }
 
-Simulation.prototype.createGolem = function () {
-	var x = random(this.terrain.width);
-	var z = random(this.terrain.depth);
-	var y = this.terrain.elevation[x][z]-1;
+Simulation.prototype.createGolems = function (num) {
+	for (var i=0; i<num; i++) {
+		var x = random(this.terrain.width);
+		var z = random(this.terrain.depth);
+		var y = this.terrain.elevation[x][z]-1;
 
-	this.terrain.block[x][y][z].type = blockID.golem;
-	this.terrain.elevation[x][z] -=1;
-	this.terrain.checkVisible();
-	this.unit.push(new Agent(x,y,z));
-};
+		this.terrain.block[x][y][z].type = blockID.golem;
+		this.terrain.elevation[x][z] -=1;
+		this.terrain.checkVisible();
+		this.unit.push(new Agent(x,y,z));
+	}
+}
 
 function Agent(x,y,z) {
 	this.x = x;
@@ -41,7 +43,7 @@ Simulation.prototype.update = function () {
 			this.unit[i].oldX = this.unit[i].x;
 			this.unit[i].oldY = this.unit[i].y;
 			this.unit[i].oldZ = this.unit[i].z;
-			
+
 			if (nx>=0 && nx<this.terrain.width && nz>=0 && nz<this.terrain.depth) {
 				var ny = this.terrain.elevation[nx][nz];
 

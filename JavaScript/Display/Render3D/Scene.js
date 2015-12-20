@@ -19,11 +19,13 @@ Scene.prototype.createUnitModels = function() {
 
 	for (var i=0; i<unit.length; i++) {
 		var x = unit[i].x-halfWidth;
-		var y = unit[i].y-halfHeight;
+		var y = unit[i].y-(halfHeight+1);
 		var z = unit[i].z-halfDepth;
-		var colour = [0.5,0.5,1];
+		var colour = [Math.random(), Math.random(), Math.random()]//[0.5,0.5,1];
 		this.model[index] = new Model([x,y,z],[0,0,0],true,i);
 		this.model[index].addCube([0,0,0],colour, 0.4);
+		this.model[index].addCube([0,1,0],[0.95,0.80,0.3], 0.5);
+		index++;
 	}
 }
 
@@ -64,7 +66,7 @@ Scene.prototype.update = function() {
 			var id = this.model[i].unitID;
 			if (unit[id].x !== unit[id].oldX || unit[id].y !== unit[id].oldY || unit[id].z !== unit[id].oldZ ) {
 				var smooth = this.smoothMovement(unit[id]);
-				
+
 				var x = smooth[0]-halfWidth;
 				var y = smooth[1]-halfHeight;
 				var z = smooth[2]-halfDepth;
