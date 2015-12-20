@@ -17,7 +17,7 @@ function Program(canvasName) {
 }
 
 Program.prototype.update = function() {
-//	this.simulation.update();
+	this.simulation.update();
 	this.display.update();
 	this.control.mouse.isReleased = false;
 }

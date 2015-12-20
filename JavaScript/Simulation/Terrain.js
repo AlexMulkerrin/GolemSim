@@ -43,7 +43,7 @@ Terrain.prototype.initialiseEmptyBlocks = function () {
 Terrain.prototype.createBumpyTerrain = function () {
 	for (var i = 0; i<this.width; i++) {
 		for ( var k=0; k<this.depth; k++) {
-			this.elevation[i][k] += Math.floor(Math.random()*2);
+			//this.elevation[i][k] += Math.floor(Math.random()*2);
 			for ( var j=0; j<this.elevation[i][k]; j++) {
 				this.block[i][j][k].type  = blockID.sand;
 			}
@@ -78,7 +78,7 @@ Terrain.prototype.getTotals = function() {
 }
 
 Terrain.prototype.checkVisible = function() {
-	var adj = [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+	var adj = [[0,0,1],[0,0,-1],[1,0,0],[-1,0,0],[0,1,0],[0,-1,0]];
 	for (var i=0; i<this.width; i++) {
 		for (var k=0; k<this.depth; k++) {
 			for (var j=0; j<this.height; j++) {
@@ -88,7 +88,7 @@ Terrain.prototype.checkVisible = function() {
 						var y = j + adj[e][1];
 						var z = k + adj[e][2];
 						if (x>=0 && x<this.width && y>=0 && y<this.height && z>=0 && z<this.depth) {
-							if (this.block[x][y][z].type == blockID.air) {
+							if (this.block[x][y][z].type == blockID.air || this.block[x][y][z].type == blockID.golem) {
 								this.block[i][j][k].visible = true;
 								this.block[i][j][k].sideVisible[e] = true;
 							}

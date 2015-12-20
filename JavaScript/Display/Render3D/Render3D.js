@@ -42,9 +42,6 @@ Render3D.prototype.loadShader = function(name) {
 	request.send();
 }
 
-
-
-
 Render3D.prototype.initialise = function() {
 	this.createShaderProgram();
 	this.createPointers();
@@ -118,7 +115,7 @@ Render3D.prototype.createBuffers= function() {
 Render3D.prototype.update = function() {
 	if (this.shaderProgramReady) {
 		this.camera.update();
-	//	this.scene.update();
+		this.scene.update();
 		this.drawScene();
 	}
 }

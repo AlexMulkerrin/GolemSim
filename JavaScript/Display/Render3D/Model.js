@@ -78,6 +78,20 @@ Model.prototype.addCube = function(position, colour, scale) {
 	}
 }
 
+Model.prototype.addVisibleSidesCube = function(position, colour, scale, visible) {
+	var shape = new VisibleSidesCubeMesh(visible);
+	var x,y,z;
+	for (var i=0; i<shape.vertex.length; i++) {
+		x = shape.vertex[i][0]*scale + position[0];
+		y = shape.vertex[i][1]*scale + position[1];
+		z = shape.vertex[i][2]*scale + position[2];
+		this.vertexArray.push(x,y,z);
+		this.vertexArray.push(colour[0],colour[1],colour[2]);
+		this.vertexArray.push(shape.normal[i][0],shape.normal[i][1],shape.normal[i][2]);
+		this.totalVerticies++;
+	}
+}
+
 Model.prototype.addSphere = function(longitudeBands, latitudeBands, radius) {
 	var colour = [0.1,0.1,1];
 	var vertexPositons = [];
@@ -206,4 +220,40 @@ function CubeMesh() {
 				d[4], d[4], d[4],
 				d[5], d[5], d[5],
 				d[5], d[5], d[5]];
+}
+
+function VisibleSidesCubeMesh(visible) {
+	// corner verticies
+	var c=[	[1,-1,1], [-1,1,1],		[1,1,1],	[-1,-1,1],
+			[1,1,-1], [-1,1,-1],	[1,-1,-1],	[-1,-1,-1]];
+	// array of face normals
+	var d = [[0,0,1],[0,0,-1],[1,0,0],[-1,0,0],[0,1,0],[0,-1,0]];
+	this.vertex = [];
+	this.normal = [];
+		if (visible[0]) {
+			this.vertex.push(c[0], c[1], c[2], c[3], c[1], c[0]);
+			this.normal.push(d[0], d[0], d[0], d[0], d[0], d[0])
+		}
+		if (visible[1]) {
+			this.vertex.push(c[4], c[5], c[6], c[7], c[6], c[5]);
+			this.normal.push(d[1], d[1], d[1], d[1], d[1], d[1])
+		}
+
+		if (visible[2]) {
+			this.vertex.push(c[2], c[4], c[0], c[4], c[6], c[0]);
+			this.normal.push(d[2], d[2], d[2], d[2], d[2], d[2])
+		}
+		if (visible[3]) {
+			this.vertex.push(c[5], c[1], c[7], c[3], c[7], c[1]);
+			this.normal.push(d[3], d[3], d[3], d[3], d[3], d[3])
+		}
+
+		if (visible[4]) {
+			this.vertex.push(c[4], c[2], c[1], c[5], c[4], c[1]);
+			this.normal.push(d[4], d[4], d[4], d[4], d[4], d[4])
+		}
+		if (visible[5]) {
+			this.vertex.push(c[7], c[0], c[6], c[0], c[7], c[3]);
+			this.normal.push(d[5], d[5], d[5], d[5], d[5], d[5])
+		}
 }
