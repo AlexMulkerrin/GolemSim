@@ -115,6 +115,15 @@ Render3D.prototype.createBuffers= function() {
 Render3D.prototype.update = function() {
 	if (this.shaderProgramReady) {
 		this.camera.update();
+
+		// refresh map vertex array?
+		if (this.targetSim.framesTillUpdate == this.targetSim.framesPerTick) {
+			var gl = this.gl;
+			this.scene.refreshChunk();
+			gl.bindBuffer(gl.ARRAY_BUFFER, this.arrayBufferObjectID[0]);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.scene.model[0].vertexArray), gl.DYNAMIC_DRAW);
+		}
+
 		this.scene.update();
 		this.drawScene();
 	}

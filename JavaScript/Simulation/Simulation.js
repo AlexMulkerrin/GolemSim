@@ -47,13 +47,22 @@ Simulation.prototype.update = function () {
 			if (nx>=0 && nx<this.terrain.width && nz>=0 && nz<this.terrain.depth) {
 				var ny = this.terrain.elevation[nx][nz];
 
-				this.terrain.block[this.unit[i].x,this.unit[i].y,this.unit[i].z].type = blockID.air;
+				this.terrain.block[this.unit[i].x][this.unit[i].y][this.unit[i].z].type = blockID.air;
 				this.unit[i].x = nx;
 				this.unit[i].y = ny;
 				this.unit[i].z = nz;
-				this.terrain.block[this.unit[i].x,this.unit[i].y,this.unit[i].z].type = blockID.golem;
+				this.terrain.block[this.unit[i].x][this.unit[i].y][this.unit[i].z].type = blockID.golem;
 			}
+
+			// eats!
+			//if (this.unit[i].y-1>0) {
+			//	this.terrain.block[this.unit[i].x][this.unit[i].y-1][this.unit[i].z].type = blockID.air;
+			//	this.terrain.elevation[this.unit[i].x][this.unit[i].z] -= 1;
+			//}
+
 		}
+		//this.terrain.createHeightMap();
+		this.terrain.checkVisible();
 		this.tick++;
 		this.framesTillUpdate = this.framesPerTick;
 	} else {

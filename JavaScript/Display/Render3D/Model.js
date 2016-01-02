@@ -34,6 +34,11 @@ Model.prototype.update = function() {
 	//this.updateOrbit();
 }
 
+Model.prototype.clearVertexArray = function() {
+	this.totalVerticies = 0;
+	this.vertexArray = [];
+}
+
 Model.prototype.setPosition = function(x, y, z) {
 	this.modelMatrix = translateMatrix4(this.modelMatrix, -this.x, -this.y, -this.z);
 	this.x = x;

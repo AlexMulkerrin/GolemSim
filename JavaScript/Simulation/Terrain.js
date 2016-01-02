@@ -12,7 +12,7 @@ function Terrain(width, height, depth) {
 	this.block = [];
 	this.initialiseEmptyBlocks();
 
-	this.createBumpyTerrain();
+	this.createHeightMap();
 	this.checkVisible();
 
 	this.totals = [];
@@ -40,7 +40,14 @@ Terrain.prototype.initialiseEmptyBlocks = function () {
 	}
 }
 
-Terrain.prototype.createBumpyTerrain = function () {
+Terrain.prototype.createHeightMap = function () {
+	this.initialiseEmptyBlocks();
+	var random = new PseudorandomGenerator();
+	this.seed = Math.floor(Math.random()*9000);//13;
+	random.setSeed(this.seed);
+	this.raiseLand(random);
+	this.selectBlock(random);
+
 	for (var i = 0; i<this.width; i++) {
 		for ( var k=0; k<this.depth; k++) {
 			//this.elevation[i][k] += Math.floor(Math.random()*2);
@@ -48,6 +55,25 @@ Terrain.prototype.createBumpyTerrain = function () {
 				this.block[i][j][k].type  = blockID.sand;
 			}
 
+		}
+	}
+}
+Terrain.prototype.raiseLand = function(random) {
+	var noise = new OctaveNoise(2, random);
+	for (var i = 0; i<this.width; i++) {
+		for ( var k=0; k<this.depth; k++) {
+			var elev = noise.compute(i*0.05,k*0.05)*8;
+			this.elevation[i][k] = Math.floor(elev)+this.groundLevel;
+
+		}
+	}
+}
+Terrain.prototype.selectBlock = function(random) {
+	for (var i = 0; i<this.width; i++) {
+		for ( var k=0; k<this.depth; k++) {
+			for ( var j=0; j<this.elevation[i][k]; j++) {
+				this.block[i][j][k].type  = blockID.sand;
+			}
 		}
 	}
 }
@@ -82,6 +108,8 @@ Terrain.prototype.checkVisible = function() {
 	for (var i=0; i<this.width; i++) {
 		for (var k=0; k<this.depth; k++) {
 			for (var j=0; j<this.height; j++) {
+				this.block[i][j][k].visible = false;
+				this.block[i][j][k].sideVisible = [false,false,false,false,false,false];
 				if (this.block[i][j][k].type !== blockID.air) {
 					for (var e=0; e<adj.length; e++) {
 						var x = i + adj[e][0];
