@@ -133,6 +133,7 @@ Terrain.prototype.checkVisible = function() {
 
 function Block() {
 	this.type = blockID.air;
+	this.colour = [0.95,0.80,0.3];//[Math.random(), Math.random(), Math.random()];
 	this.visible = false;
 	this.sideVisible = [false,false,false,false,false,false];
 }

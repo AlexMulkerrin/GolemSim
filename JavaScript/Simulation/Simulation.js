@@ -31,43 +31,57 @@ function Agent(x,y,z) {
 	this.oldX = x;
 	this.oldY = y;
 	this.oldZ = z;
+	
+	this.colour = [Math.random(), Math.random(), Math.random()];
 }
 
 Simulation.prototype.update = function () {
 	if (this.framesTillUpdate<1) {
-		var direc = [[1,0],[-1,0],[0,1],[0,-1]];
+		
 		for (var i=0; i<this.unit.length; i++) {
-			var choice = random(4);
-			var nx = (this.unit[i].x+direc[choice][0]);
-			var nz = (this.unit[i].z+direc[choice][1]);
-			this.unit[i].oldX = this.unit[i].x;
-			this.unit[i].oldY = this.unit[i].y;
-			this.unit[i].oldZ = this.unit[i].z;
-
-			if (nx>=0 && nx<this.terrain.width && nz>=0 && nz<this.terrain.depth) {
-				var ny = this.terrain.elevation[nx][nz];
-
-				this.terrain.block[this.unit[i].x][this.unit[i].y][this.unit[i].z].type = blockID.air;
-				this.unit[i].x = nx;
-				this.unit[i].y = ny;
-				this.unit[i].z = nz;
-				this.terrain.block[this.unit[i].x][this.unit[i].y][this.unit[i].z].type = blockID.golem;
-			}
-
-			// eats!
-			//if (this.unit[i].y-1>0) {
-			//	this.terrain.block[this.unit[i].x][this.unit[i].y-1][this.unit[i].z].type = blockID.air;
-			//	this.terrain.elevation[this.unit[i].x][this.unit[i].z] -= 1;
-			//}
-
+			this.updateUnit(this.unit[i]);
 		}
+		
 		//this.terrain.createHeightMap();
 		this.terrain.checkVisible();
+		
 		this.tick++;
 		this.framesTillUpdate = this.framesPerTick;
 	} else {
 		this.framesTillUpdate--;
 	}
+}
+
+Simulation.prototype.updateUnit = function (unit) {
+	var direc = [[1,0],[-1,0],[0,1],[0,-1]];
+	var choice = 1;//random(4);
+	var nx = (unit.x+direc[choice][0]);
+	var nz = (unit.z+direc[choice][1]);
+	unit.oldX = unit.x;
+	unit.oldY = unit.y;
+	unit.oldZ = unit.z;
+
+	if (nx>=0 && nx<this.terrain.width && nz>=0 && nz<this.terrain.depth
+		&& this.terrain.elevation[nx][nz] <= this.terrain.elevation[unit.x][unit.z]+1
+		&& this.terrain.elevation[nx][nz] >= this.terrain.elevation[unit.x][unit.z]-1 ) {
+		var ny = this.terrain.elevation[nx][nz];
+		
+		if (this.terrain.block[nx][ny][nz].type === blockID.air) {
+			this.terrain.block[unit.x][unit.y][unit.z].type = blockID.air;
+			unit.x = nx;
+			unit.y = ny;
+			unit.z = nz;
+			this.terrain.block[unit.x][unit.y][unit.z].type = blockID.golem;
+		}
+	}
+
+	// paint block below!
+	if (unit.oldY-1>0) {
+		this.terrain.block[unit.oldX][unit.oldY-1][unit.oldZ].colour = unit.colour;
+	//	this.terrain.elevation[unit.x][unit.z] -= 1;
+	}
+
+	
 }
 
 function random(integer) {

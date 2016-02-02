@@ -21,7 +21,7 @@ Scene.prototype.createUnitModels = function() {
 		var x = unit[i].x-halfWidth;
 		var y = unit[i].y-halfHeight;
 		var z = unit[i].z-halfDepth;
-		var colour = [Math.random(), Math.random(), Math.random()]//[0.5,0.5,1];
+		var colour = unit[i].colour;//[Math.random(), Math.random(), Math.random()]//[0.5,0.5,1];
 		this.model[index] = new Model([x,y,z],[0,0,0],true,i);
 		this.model[index].addCube([0,0,0],colour, 0.4);
 		//this.model[index].addCube([0,1,0],[0.95,0.80,0.3], 0.5);
@@ -39,7 +39,7 @@ Scene.prototype.createChunk = function() {
 			for (var k=0; k<terrain.depth; k++) {
 				if (terrain.block[i][j][k].visible) {
 					if (terrain.block[i][j][k].type == blockID.sand) {
-						var colour = [0.95,0.80,0.3];
+						var colour = terrain.block[i][j][k].colour ;//[0.95,0.80,0.3];
 						var pos = [i-terrain.width/2, j-terrain.height/2, k-terrain.depth/2]
 						this.model[0].addVisibleSidesCube(pos, colour, 0.5, terrain.block[i][j][k].sideVisible);
 
@@ -64,7 +64,7 @@ Scene.prototype.refreshChunk = function() {
 			for (var k=0; k<terrain.depth; k++) {
 				if (terrain.block[i][j][k].visible) {
 					if (terrain.block[i][j][k].type == blockID.sand) {
-						var colour = [0.95,0.80,0.3];
+						var colour = terrain.block[i][j][k].colour ;//[0.95,0.80,0.3];
 						var pos = [i-terrain.width/2, j-terrain.height/2, k-terrain.depth/2]
 						this.model[0].addVisibleSidesCube(pos, colour, 0.5, terrain.block[i][j][k].sideVisible);
 
