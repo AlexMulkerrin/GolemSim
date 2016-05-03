@@ -2,7 +2,7 @@ function Simulation(width, height, depth) {
 	this.terrain = new Terrain(width, height, depth);
 
 	this.unit = [];
-	this.createGolems(10);
+	//this.createGolems(10);
 
 	this.terrain.getTotals();
 
@@ -31,20 +31,20 @@ function Agent(x,y,z) {
 	this.oldX = x;
 	this.oldY = y;
 	this.oldZ = z;
-	
+
 	this.colour = [Math.random(), Math.random(), Math.random()];
 }
 
 Simulation.prototype.update = function () {
 	if (this.framesTillUpdate<1) {
-		
+
 		for (var i=0; i<this.unit.length; i++) {
 			this.updateUnit(this.unit[i]);
 		}
-		
+
 		//this.terrain.createHeightMap();
 		this.terrain.checkVisible();
-		
+
 		this.tick++;
 		this.framesTillUpdate = this.framesPerTick;
 	} else {
@@ -65,7 +65,7 @@ Simulation.prototype.updateUnit = function (unit) {
 		&& this.terrain.elevation[nx][nz] <= this.terrain.elevation[unit.x][unit.z]+1
 		&& this.terrain.elevation[nx][nz] >= this.terrain.elevation[unit.x][unit.z]-1 ) {
 		var ny = this.terrain.elevation[nx][nz];
-		
+
 		if (this.terrain.block[nx][ny][nz].type === blockID.air) {
 			this.terrain.block[unit.x][unit.y][unit.z].type = blockID.air;
 			unit.x = nx;
@@ -81,7 +81,7 @@ Simulation.prototype.updateUnit = function (unit) {
 	//	this.terrain.elevation[unit.x][unit.z] -= 1;
 	}
 
-	
+
 }
 
 function random(integer) {

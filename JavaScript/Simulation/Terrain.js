@@ -1,4 +1,5 @@
 const blockID = { air:0, sand:1, golem:2};
+const materialID = {gas:0, liquid:0, solid:1};
 
 function Terrain(width, height, depth) {
 	this.width = width;
@@ -29,6 +30,7 @@ Terrain.prototype.initialiseFlatElevation = function () {
 }
 
 Terrain.prototype.initialiseEmptyBlocks = function () {
+	this.block = [];
 	for (var i = 0; i<this.width; i++) {
 		this.block[i] = [];
 		for ( var j=0; j<this.height; j++) {
@@ -68,6 +70,97 @@ Terrain.prototype.raiseLand = function(random) {
 		}
 	}
 }
+
+Terrain.prototype.readJSON = function(JSONtext) {
+	this.width = JSONtext.width;
+	this.height = JSONtext.height;
+	this.depth = JSONtext.depth;
+	this.initialiseEmptyBlocks();
+
+	this.palette = JSONtext.palette;
+	this.readRunLengthEncoding(JSONtext["RunLengthEncoded blocks"]);
+	this.checkVisible();
+}
+Terrain.prototype.readRunLengthEncoding = function(JSONtext) {
+	var x=0; y=0; z=0;
+	//var result = create3DArray(this.width, this.height, this.depth,0);
+	var currentCount ="";
+	var runLength = 0;
+	var currentID = 2;
+	var currentChar= "";
+	for (var i=0; i<JSONtext.length; i++) {
+		currentChar = JSONtext.charAt(i);
+		if (isNaN(parseInt(currentChar)) ) {
+
+			currentID = getIDfromSymbol(currentChar);
+			runLength = parseInt(currentCount);
+			if (isNaN(runLength)) runLength = 1;
+			for (var j=0; j<runLength; j++) {
+				var material = this.palette[currentID].material;
+				this.block[x][y][z].type = materialID[material];
+				this.block[x][y][z].colour = toColourVector(this.palette[currentID].colour);
+				//result[x][y][z] = currentID;
+				z++;
+				if (z === this.depth) {
+					z=0;
+					y++;
+					if (y === this.height) {
+						y=0;
+						x++;
+					}
+				}
+			}
+			currentCount = "";
+		} else {
+			currentCount += currentChar;
+		}
+	}
+	//return result;
+}
+function create3DArray(width, height, depth, initialValue) {
+	result = [];
+	for (var i=0; i<width; i++) {
+		result[i] = [];
+		for (var j=0; j<height; j++) {
+				result[i][j] = [];
+			for (var k=0; k<depth; k++) {
+				result[i][j][k] = initialValue;
+			}
+		}
+	}
+	return result;
+}
+function getIDfromSymbol(symbol) {
+	switch (symbol) {
+		case "A":
+			return 0;
+		case "B":
+			return 1;
+		case "C":
+			return 2;
+		case "D":
+			return 3;
+		case "E":
+			return 4;
+		case "F":
+			return 5;
+		case "G":
+			return 6;
+		case "H":
+			return 7;
+	}
+}
+function toColourVector(colour) {
+	var components=[], string;
+	for (var i=0; i<3; i++) {
+		// "#rrggbb"
+		string = colour[1+i*2]+colour[2+i*2];
+		components[i]=parseInt(string,16);
+		components[i] = components[i]/256;
+	}
+	return components;
+}
+
 Terrain.prototype.selectBlock = function(random) {
 	for (var i = 0; i<this.width; i++) {
 		for ( var k=0; k<this.depth; k++) {
